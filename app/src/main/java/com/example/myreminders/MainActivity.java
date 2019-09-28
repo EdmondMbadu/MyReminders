@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    // THIS is the version I am resending to prof Ceklosky
     Intent intent;
     DBHandler dbHandler;
 
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         dbHandler = new DBHandler(this, null);
 
-//        myReminderListsView=(ListView)findViewById(R.id.myReminderListsView) ;
+//        myReminderListsView=(ListView)findViewById(R.id.m) ;
         myRemindersListsAdapter= new MyRemindersLists(this, dbHandler.getMyReminders(),0);
         myReminderListsView.setAdapter(myRemindersListsAdapter);
 

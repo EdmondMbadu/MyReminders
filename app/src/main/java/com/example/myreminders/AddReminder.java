@@ -2,11 +2,10 @@ package com.example.myreminders;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -21,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class CreateReminders extends AppCompatActivity {
+public class AddReminder extends AppCompatActivity {
 
     Intent intent;
 
@@ -30,6 +29,7 @@ public class CreateReminders extends AppCompatActivity {
     EditText typeEditText;
 
     Calendar calendar;
+    DBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,8 @@ public class CreateReminders extends AppCompatActivity {
         titleEditText= (EditText)findViewById(R.id.titleEditText);
         dateEditText=(EditText)findViewById(R.id.dateEditText);
         typeEditText=(EditText)findViewById(R.id.typeEditText);
+
+        calendar = Calendar.getInstance();
 
         final DatePickerDialog.OnDateSetListener date= new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -60,7 +62,7 @@ public class CreateReminders extends AppCompatActivity {
         dateEditText.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(CreateReminders.this,
+                new DatePickerDialog(AddReminder.this,
                         date,
                         calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH),
@@ -70,13 +72,14 @@ public class CreateReminders extends AppCompatActivity {
         });
 
 
+        dbHandler= new DBHandler(this, null);
 
 
     }
 
     public void updateDueDate(){
         // create a SimpleDateFormat
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyy-MM--dd", Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         // apply SimpleDateFormat to date in Calendar and set it in the date EditText
         dateEditText.setText(simpleDateFormat.format(calendar.getTime()));
 
@@ -106,7 +109,7 @@ public class CreateReminders extends AppCompatActivity {
             case R.id.action_add_reminder:
                 // initializing an intent for the create list activity, starting it
                 // and returning true
-                intent = new Intent(this, CreateReminders.class);
+                intent = new Intent(this, AddReminder.class);
                 startActivity(intent);
                 return true;
             default:
@@ -115,6 +118,7 @@ public class CreateReminders extends AppCompatActivity {
         }
 
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void createReminders(MenuItem menuItem){
 
         String title= titleEditText.getText().toString();
@@ -126,6 +130,7 @@ public class CreateReminders extends AppCompatActivity {
             Toast.makeText(this,"Please enter a title, date, and type!", Toast.LENGTH_LONG).show();
         }else{
             // if none of the Strings are empty, display, Shopping list Added
+            dbHandler.addMyReminder(title, date, type);
             Toast.makeText(this,"Reminder Added!", Toast.LENGTH_LONG).show();
         }
     }

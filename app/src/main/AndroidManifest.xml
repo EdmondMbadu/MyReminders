@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".CreateReminders"
+            android:name=".AddReminder"
             android:label="@string/title_activity_create_reminders"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
