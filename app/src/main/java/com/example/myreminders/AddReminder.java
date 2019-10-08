@@ -12,8 +12,11 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -28,8 +31,14 @@ public class AddReminder extends AppCompatActivity {
     EditText dateEditText;
     EditText typeEditText;
 
+    Spinner TypeSpinner;
+
+
+    Bundle bundle;
+
     Calendar calendar;
     DBHandler dbHandler;
+    String quantity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +49,24 @@ public class AddReminder extends AppCompatActivity {
 
         titleEditText= (EditText)findViewById(R.id.titleEditText);
         dateEditText=(EditText)findViewById(R.id.dateEditText);
-        typeEditText=(EditText)findViewById(R.id.typeEditText);
+//        typeEditText=(EditText)findViewById(R.id.typeEditText);
+
+        TypeSpinner =(Spinner)findViewById(R.id.TypeSpinner) ;
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.quantities, android.R.layout.simple_spinner_item);
+
+        // further stylize ArrayAdapter with style defined by simple_spinner_dropdown_item
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // set ArrayAdapter on Spinner
+        TypeSpinner.setAdapter(adapter);
+
+        // set OnItemSelectedListener on Spinner
+
+//        TypeSpinner.setOnItemSelectedListener(this);
+
+        // initialize DBHandler
+        dbHandler = new DBHandler(this, null);
 
         calendar = Calendar.getInstance();
 
@@ -123,17 +149,36 @@ public class AddReminder extends AppCompatActivity {
 
         String title= titleEditText.getText().toString();
         String date= dateEditText.getText().toString();
-        String type= typeEditText.getText().toString();
+//        String type= typeEditText.getText().toString();
 
         // trim strings and see if they're equal to empty string
-        if(title.trim().equals("")|| date.trim().equals("")|| type.trim().equals("")){
-            Toast.makeText(this,"Please enter a title, date, and type!", Toast.LENGTH_LONG).show();
-        }else{
-            // if none of the Strings are empty, display, Shopping list Added
-            dbHandler.addMyReminder(title, date, type);
-            Toast.makeText(this,"Reminder Added!", Toast.LENGTH_LONG).show();
+        // trim Strings and see if any are equal to an empty String
+        if ((title.trim().equals("")) || (date.trim().equals("")) || (quantity.trim().equals(""))){
+            // if any are equal to an empty String, then that means
+            // required data hasn't been input, so display a toast
+            Toast.makeText(this, "Please enter a name, price, and quantity!", Toast.LENGTH_LONG).show();
+        } else {
+            // if none are equal to an empty String, then that means
+            // all required data has been input, so update the database
+            // and display a toast
+            dbHandler.addMyReminder(title, date, quantity);
+            Toast.makeText(this, "Reminder added!", Toast.LENGTH_LONG).show();
         }
     }
+
+
+    /**
+     * This method gets called when an item in the Spinner is selected.
+     * @param adapterView Spinner AdapterView
+     * @param view AddItem View
+     * @param position position of item in Spinner that was selected
+     * @param id database id of item in Spinner that was selected
+     */
+
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+        quantity = adapterView.getItemAtPosition(position).toString();
+    }
+
 
 }
 

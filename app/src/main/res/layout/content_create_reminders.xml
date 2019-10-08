@@ -66,12 +66,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/type" />
 
-            <EditText
-                android:id="@+id/typeEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName" />
+            <Spinner
+                android:id="@+id/TypeSpinner"
+                android:layout_width="match_parent"
+                android:entries="@array/quantities"
+                android:layout_height="wrap_content" />
+
         </TableRow>
 
     </TableLayout>
